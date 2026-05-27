@@ -37,26 +37,14 @@ import androidx.compose.ui.unit.sp
 import mx.utng.ich.smarthealth.ui.theme.SmartHealthTheme
 import androidx.compose.material3.Surface
 import android.util.Log
+import mx.utng.ich.smarthealth.navigation.SmartHealthNavGraph
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            SmartHealthTheme(
-                darkTheme = false,
-                dynamicColor = false
-            ) {
-                Surface(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    LoginScreen(
-                        onLoginSuccess = {
-                            Log.d("SmartHealth", "Login exitoso")
-                        }
-                    )
-                }
-            }
+            SmartHealthNavGraph()
         }
     }
 }
