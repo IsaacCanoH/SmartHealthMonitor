@@ -15,6 +15,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -28,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import mx.utng.ich.smarthealth.data.SmartHealthRepository
 import mx.utng.ich.smarthealth.ui.components.FilaHistorial
 import mx.utng.ich.smarthealth.ui.components.TarjetaDato
 import mx.utng.ich.smarthealth.ui.theme.SmartHealthTheme
@@ -128,6 +130,24 @@ fun DashboardScreen(
                     key = { it.id }
                 ) { lectura ->
                     FilaHistorial(lectura = lectura)
+                }
+
+                // Botón temporal para probar la recepción de datos del wearable.
+                // Este botón solo aparece en modo DEBUG.
+                item {
+                    OutlinedButton(
+                        onClick = {
+                            // Simular lectura del wearable
+                            val fcSimulado = (60..110).random()
+                            val pasosSimulados = (3000..8000).random()
+
+                            SmartHealthRepository.actualizarFC(fcSimulado)
+                            SmartHealthRepository.actualizarPasos(pasosSimulados)
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Simular dato del wearable (DEBUG)")
+                    }
                 }
             }
         }
