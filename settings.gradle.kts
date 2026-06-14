@@ -24,3 +24,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "SmartHealth"
 include(":app")
+include(":wear")
