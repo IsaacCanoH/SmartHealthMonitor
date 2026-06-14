@@ -24,11 +24,13 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.launch
 import mx.utng.ich.smarthealth.data.SmartHealthRepository
 import mx.utng.ich.smarthealth.ui.components.FilaHistorial
 import mx.utng.ich.smarthealth.ui.components.TarjetaDato
@@ -46,7 +48,8 @@ fun DashboardScreen(
     // collectAsState() permite que Compose actualice la pantalla automáticamente.
     val fc by viewModel.fc.collectAsState()
     val pasos by viewModel.pasos.collectAsState()
-    val historial = viewModel.historial
+    val historial by viewModel.historial.collectAsState()
+    val scope = rememberCoroutineScope()
 
     SmartHealthTheme {
         Scaffold(
@@ -141,8 +144,10 @@ fun DashboardScreen(
                             val fcSimulado = (60..110).random()
                             val pasosSimulados = (3000..8000).random()
 
-                            SmartHealthRepository.actualizarFC(fcSimulado)
-                            SmartHealthRepository.actualizarPasos(pasosSimulados)
+                            scope.launch {
+                                SmartHealthRepository.actualizarFC(fcSimulado)
+                                SmartHealthRepository.actualizarPasos(pasosSimulados)
+                            }
                         },
                         modifier = Modifier.fillMaxWidth()
                     ) {

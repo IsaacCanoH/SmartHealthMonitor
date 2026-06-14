@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import mx.utng.ich.smarthealth.data.SmartHealthRepository
+import mx.utng.ich.smarthealth.data.db.LecturaFC
 import mx.utng.ich.smarthealth.data.models.MockData
 
 class DashboardViewModel : ViewModel() {
@@ -32,7 +33,13 @@ class DashboardViewModel : ViewModel() {
             initialValue = MockData.pasosActual
         )
 
-    // Historial simulado.
-    // Más adelante, en S7, esto puede venir desde Room.
-    val historial = MockData.historialFC
+    // Historial real desde Room.
+    // Cada vez que Room tenga nuevas lecturas, la pantalla se actualizará.
+    val historial: StateFlow<List<LecturaFC>> =
+        SmartHealthRepository.obtenerHistorial()
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = emptyList()
+            )
 }

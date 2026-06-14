@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import mx.utng.ich.smarthealth.data.models.LecturaFC
+import mx.utng.ich.smarthealth.data.db.LecturaFC
 import mx.utng.ich.smarthealth.ui.theme.SmartHealthTheme
 
 @Composable
@@ -60,7 +60,9 @@ private fun FilaHistorialPreviewNormal() {
             lectura = LecturaFC(
                 id = 1,
                 valorBpm = 78,
-                hora = "11:00"
+                timestamp = System.currentTimeMillis(),
+                hora = "11:00",
+                esNormal = true
             )
         )
     }
@@ -74,7 +76,9 @@ private fun FilaHistorialPreviewFueraDeRango() {
             lectura = LecturaFC(
                 id = 2,
                 valorBpm = 120,
-                hora = "10:30"
+                timestamp = System.currentTimeMillis(),
+                hora = "10:30",
+                esNormal = false
             )
         )
     }
