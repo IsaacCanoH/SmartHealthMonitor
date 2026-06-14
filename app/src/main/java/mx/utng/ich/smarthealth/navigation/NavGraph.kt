@@ -20,6 +20,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import mx.utng.ich.smarthealth.LoginScreen
 import mx.utng.ich.smarthealth.ui.screens.DashboardScreen
+import mx.utng.ich.smarthealth.ui.screens.HistorialScreen
 import mx.utng.ich.smarthealth.ui.theme.SmartHealthTheme
 
 @Composable
@@ -57,10 +58,9 @@ fun SmartHealthNavGraph() {
             )
         }
 
-        // Pantalla Historial temporal
+        // Pantalla Historial real desde Room
         composable(Screen.Historial.route) {
-            PantallaEnConstruccion(
-                titulo = "Historial completo",
+            HistorialScreen(
                 onBack = {
                     navController.popBackStack()
                 }

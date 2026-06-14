@@ -48,7 +48,7 @@ fun DashboardScreen(
     // collectAsState() permite que Compose actualice la pantalla automáticamente.
     val fc by viewModel.fc.collectAsState()
     val pasos by viewModel.pasos.collectAsState()
-    val historial = viewModel.historial
+    val historial by viewModel.historial.collectAsState()
     val scope = rememberCoroutineScope()
 
     SmartHealthTheme {
