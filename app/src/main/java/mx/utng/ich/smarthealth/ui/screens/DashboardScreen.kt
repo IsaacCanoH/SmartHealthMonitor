@@ -17,6 +17,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -24,7 +27,10 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,18 +47,45 @@ import mx.utng.ich.smarthealth.ui.viewmodel.DashboardViewModel
 @Composable
 fun DashboardScreen(
     onHistorialClick: () -> Unit = {},
-    onAlertClick: () -> Unit = {},
+    onAlertClick: () -> Unit = {}, // Se mantiene para no romper NavGraph, pero ahora usamos AlertaScreen local
     viewModel: DashboardViewModel = viewModel()
 ) {
-    // Estos datos vienen desde el ViewModel.
-    // collectAsState() permite que Compose actualice la pantalla automáticamente.
+    // Datos desde el ViewModel
     val fc by viewModel.fc.collectAsState()
     val pasos by viewModel.pasos.collectAsState()
     val historial by viewModel.historial.collectAsState()
+
+    // Estado del diálogo y Snackbar
+    var mostrarAlerta by remember { mutableStateOf(false) }
+    val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
     SmartHealthTheme {
+
+        // Diálogo condicional
+        if (mostrarAlerta) {
+            AlertaScreen(
+                fc = fc,
+                onDismiss = {
+                    mostrarAlerta = false
+                },
+                onConfirmar = {
+                    mostrarAlerta = false
+
+                    scope.launch {
+                        snackbarHostState.showSnackbar(
+                            message = "✅ Alerta enviada a tus contactos de emergencia",
+                            duration = SnackbarDuration.Long
+                        )
+                    }
+                }
+            )
+        }
+
         Scaffold(
+            snackbarHost = {
+                SnackbarHost(hostState = snackbarHostState)
+            },
             topBar = {
                 TopAppBar(
                     title = {
@@ -69,7 +102,9 @@ fun DashboardScreen(
             },
             floatingActionButton = {
                 FloatingActionButton(
-                    onClick = onAlertClick,
+                    onClick = {
+                        mostrarAlerta = true
+                    },
                     containerColor = MaterialTheme.colorScheme.error
                 ) {
                     Icon(
@@ -136,11 +171,9 @@ fun DashboardScreen(
                 }
 
                 // Botón temporal para probar la recepción de datos del wearable.
-                // Este botón solo aparece en modo DEBUG.
                 item {
                     OutlinedButton(
                         onClick = {
-                            // Simular lectura del wearable
                             val fcSimulado = (60..110).random()
                             val pasosSimulados = (3000..8000).random()
 
