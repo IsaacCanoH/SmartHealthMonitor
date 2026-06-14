@@ -12,8 +12,10 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.lifecycleScope
 import androidx.wear.compose.foundation.lazy.TransformingLazyColumn
 import androidx.wear.compose.foundation.lazy.rememberTransformingLazyColumnState
@@ -31,7 +33,7 @@ import androidx.wear.compose.material3.lazy.transformedHeight
 import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
 import androidx.wear.compose.ui.tooling.preview.WearPreviewFontScales
 import kotlinx.coroutines.launch
-import mx.utng.ich.smarthealth.wear.R
+import mx.utng.ich.smarthealth.wear.data.WearDataSender
 import mx.utng.ich.smarthealth.wear.health.HealthDataService
 import mx.utng.ich.smarthealth.wear.presentation.theme.SmartHealthTheme
 
@@ -54,8 +56,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Pedir permisos reales al usuario en el reloj.
-        // Si no se aceptan, Health Services no podrá leer el sensor.
         permisosLauncher.launch(
             arrayOf(
                 Manifest.permission.BODY_SENSORS,
@@ -64,7 +64,7 @@ class MainActivity : ComponentActivity() {
         )
 
         setContent {
-            WearApp("Android")
+            WearApp()
         }
     }
 
@@ -76,24 +76,31 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun WearApp(greetingName: String) {
+fun WearApp() {
     SmartHealthTheme {
         AppScaffold {
             val listState = rememberTransformingLazyColumnState()
             val transformationSpec = rememberTransformationSpec()
 
+            val context = LocalContext.current
+            val scope = rememberCoroutineScope()
+
+            val wearDataSender = remember(context) {
+                WearDataSender(context.applicationContext)
+            }
+
             ScreenScaffold(
                 scrollState = listState,
                 edgeButton = {
                     EdgeButton(
-                        onClick = { /* TODO */ },
+                        onClick = { },
                         colors =
                             ButtonDefaults.buttonColors(
                                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
                                 contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
                             ),
                     ) {
-                        Text("More")
+                        Text("OK")
                     }
                 },
             ) { contentPadding ->
@@ -109,46 +116,58 @@ fun WearApp(greetingName: String) {
                                     .transformedHeight(this, transformationSpec),
                             transformation = SurfaceTransformation(transformationSpec),
                         ) {
-                            Text(text = stringResource(R.string.hello_world, greetingName))
+                            Text(text = "SmartHealth Wear")
                         }
                     }
 
                     item {
                         Button(
-                            onClick = { /* TODO */ },
+                            onClick = {
+                                scope.launch {
+                                    wearDataSender.enviarFC(95)
+                                }
+                            },
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
                                     .transformedHeight(this, transformationSpec),
                             transformation = SurfaceTransformation(transformationSpec),
                         ) {
-                            Text("Button A")
+                            Text("Enviar 95 bpm")
                         }
                     }
 
                     item {
                         Button(
-                            onClick = { /* TODO */ },
+                            onClick = {
+                                scope.launch {
+                                    wearDataSender.enviarFC(75)
+                                }
+                            },
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
                                     .transformedHeight(this, transformationSpec),
                             transformation = SurfaceTransformation(transformationSpec),
                         ) {
-                            Text("Button B")
+                            Text("Enviar 75 bpm")
                         }
                     }
 
                     item {
                         Button(
-                            onClick = { /* TODO */ },
+                            onClick = {
+                                scope.launch {
+                                    wearDataSender.enviarFC(110)
+                                }
+                            },
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
                                     .transformedHeight(this, transformationSpec),
                             transformation = SurfaceTransformation(transformationSpec),
                         ) {
-                            Text("Button C")
+                            Text("Enviar 110 bpm")
                         }
                     }
                 }
@@ -161,5 +180,5 @@ fun WearApp(greetingName: String) {
 @WearPreviewFontScales
 @Composable
 fun DefaultPreview() {
-    WearApp("Preview Android")
+    WearApp()
 }
