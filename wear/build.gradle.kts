@@ -49,6 +49,9 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.wear.tooling.preview)
+
+    implementation("androidx.compose.material:material-icons-extended")
+
     implementation(libs.compose.material3)
     implementation(libs.compose.ui.tooling)
 

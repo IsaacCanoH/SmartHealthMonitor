@@ -64,11 +64,7 @@ class MainActivity : ComponentActivity() {
 @androidx.compose.runtime.Composable
 fun WearApp() {
     SmartHealthWearTheme {
-        WearDashboardScreen(
-            onAlertClick = {
-                Log.d("MainActivityWear", "Chip de alerta presionado en Wear")
-            }
-        )
+        SmartHealthWearNavGraph()
     }
 }
 
