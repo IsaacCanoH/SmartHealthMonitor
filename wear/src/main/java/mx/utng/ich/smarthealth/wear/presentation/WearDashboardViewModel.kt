@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import mx.utng.ich.smarthealth.wear.data.WearHealthRepository
+import mx.utng.ich.smarthealth.wear.data.WearLecturaFC
 
 class WearDashboardViewModel : ViewModel() {
 
@@ -17,4 +18,12 @@ class WearDashboardViewModel : ViewModel() {
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = 72
         )
+
+    val historial: StateFlow<List<WearLecturaFC>> =
+        WearHealthRepository.historialFlow
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = emptyList()
+            )
 }
