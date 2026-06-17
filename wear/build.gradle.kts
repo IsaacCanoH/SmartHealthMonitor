@@ -49,8 +49,20 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.wear.tooling.preview)
+
+    implementation("androidx.compose.material:material-icons-extended")
+
     implementation(libs.compose.material3)
     implementation(libs.compose.ui.tooling)
+
+    // Compose for Wear OS
+    implementation("androidx.wear.compose:compose-material:1.3.1")
+    implementation("androidx.wear.compose:compose-foundation:1.3.1")
+    implementation("androidx.wear.compose:compose-navigation:1.3.1")
+
+    // Horologist - utilidades para Wear OS
+    implementation("com.google.android.horologist:horologist-compose-layout:0.6.17")
+    implementation("com.google.android.horologist:horologist-compose-material:0.6.17")
 
     // Wearable Data Layer
     implementation(libs.play.services.wearable)
@@ -65,11 +77,14 @@ dependencies {
     // Coroutines await() para Tasks de Google Play Services
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
 
+    // Lifecycle
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
+
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
 
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
-
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
 }
