@@ -24,6 +24,7 @@ import mx.utng.ich.smarthealth.wear.presentation.components.WearFCCard
 @Composable
 fun WearDashboardScreen(
     onAlertClick: () -> Unit = {},
+    onHistorialClick: () -> Unit = {},
     viewModel: WearDashboardViewModel = viewModel()
 ) {
     val fc by viewModel.fc.collectAsState()
@@ -32,7 +33,7 @@ fun WearDashboardScreen(
     val mostrarHora by remember {
         derivedStateOf {
             listState.centerItemIndex == 0 &&
-                    listState.centerItemScrollOffset < 80
+                    kotlin.math.abs(listState.centerItemScrollOffset) < 40
         }
     }
 
@@ -57,6 +58,17 @@ fun WearDashboardScreen(
             item {
                 WearFCCard(
                     fc = fc,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            item {
+                Chip(
+                    label = {
+                        Text("📋 Historial")
+                    },
+                    onClick = onHistorialClick,
+                    colors = ChipDefaults.secondaryChipColors(),
                     modifier = Modifier.fillMaxWidth()
                 )
             }
