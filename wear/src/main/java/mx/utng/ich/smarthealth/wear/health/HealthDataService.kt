@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.guava.await
 import kotlinx.coroutines.runBlocking
 import mx.utng.ich.smarthealth.wear.data.WearDataSender
+import mx.utng.ich.smarthealth.wear.data.WearHealthRepository
 
 class HealthDataService : PassiveListenerService() {
 
@@ -33,8 +34,13 @@ class HealthDataService : PassiveListenerService() {
         if (ultimoDatoFC != null) {
             val bpm = ultimoDatoFC.value.toInt()
 
-            Log.d("HealthDataService", "FC recibida desde sensor: $bpm")
+            // Actualiza la FC local del reloj para que la UI de Wear la pueda mostrar
+            WearHealthRepository.actualizarFC(bpm)
 
+            Log.d("HealthDataService", "FC recibida desde sensor: $bpm")
+            Log.d("HealthDataService", "FC actualizada en WearHealthRepository: $bpm")
+
+            // Envía la FC al teléfono por Wearable Data Layer
             runBlocking(Dispatchers.IO) {
                 wearDataSender.enviarFC(bpm)
             }
