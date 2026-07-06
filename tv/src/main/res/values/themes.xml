@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Tema base para Android TV. Theme.Leanback agrega estilos de navegacion D-pad. -->
+    <style
+        name="Theme.SmartHealthTV"
+        parent="Theme.Leanback">
+        <item name="colorPrimary">@color/sh_primary</item>
+        <item name="colorAccent">@color/sh_amber</item>
+        <item name="android:colorBackground">@color/sh_dark</item>
+    </style>
+</resources>
