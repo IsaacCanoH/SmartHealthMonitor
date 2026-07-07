@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.view.ViewGroup
 import androidx.leanback.widget.ImageCardView
 import androidx.leanback.widget.Presenter
+import mx.utng.smarthealthmonitor.data.db.LecturaFC
 
 class FCCardPresenter : Presenter() {
 
