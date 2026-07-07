@@ -56,7 +56,6 @@ class WearDataSender(private val context: Context) {
 
                 Log.d("WearDataSender", "Mensaje enviado correctamente: path=$path data=$data")
             }
-
         } catch (e: Exception) {
             Log.e("WearDataSender", "Error al enviar mensaje", e)
         }
