@@ -18,9 +18,9 @@ class FCCardPresenter : Presenter() {
         return ViewHolder(cardView)
     }
 
-    override fun onBindViewHolder(viewHolder: ViewHolder, item: Any) {
+    override fun onBindViewHolder(viewHolder: ViewHolder, item: Any?) {
         val card = viewHolder.view as ImageCardView
-        val lectura = item as LecturaFC
+        val lectura = item as? LecturaFC ?: return
 
         card.titleText = "${lectura.valorBpm} bpm"
         card.contentText = lectura.hora

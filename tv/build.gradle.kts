@@ -44,6 +44,13 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
     implementation(libs.play.services.wearable)
 
+    val media3Version = "1.4.1"
+    implementation("androidx.media3:media3-exoplayer:$media3Version")
+    implementation("androidx.media3:media3-ui:$media3Version")
+    implementation("androidx.media3:media3-ui-leanback:$media3Version")
+    implementation("androidx.leanback:leanback-preference:1.2.0")
+    implementation("com.google.android.exoplayer:extension-leanback:2.19.1")
+
     val roomVersion = "2.7.2"
     implementation("androidx.room:room-runtime:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")

@@ -2,7 +2,6 @@ package mx.utng.smarthealthmonitor.tv
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.leanback.app.DetailsSupportFragment
@@ -19,10 +18,14 @@ import mx.utng.smarthealthmonitor.data.db.SmartHealthDB
 class DetailFragment : DetailsSupportFragment(),
     OnActionClickedListener {
 
+    private var lecturaActual: LecturaFC? = null
+
     companion object {
         const val ARG_LECTURA_ID = "lectura_id"
         const val ACTION_PLAY = 1L
         const val ACTION_BACK = 2L
+        private const val TEST_AUDIO_URL =
+            "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
 
         fun newInstance(lecturaId: Int): DetailFragment {
             return DetailFragment().apply {
@@ -47,6 +50,8 @@ class DetailFragment : DetailsSupportFragment(),
     }
 
     private fun construirDetalle(lectura: LecturaFC) {
+        lecturaActual = lectura
+
         val selector = ClassPresenterSelector()
 
         val dpPresenter = FullWidthDetailsOverviewRowPresenter(
@@ -76,7 +81,15 @@ class DetailFragment : DetailsSupportFragment(),
     override fun onActionClicked(action: Action) {
         when (action.id) {
             ACTION_PLAY -> {
-                Toast.makeText(context, "Reproducir", Toast.LENGTH_SHORT).show()
+                val lectura = lecturaActual ?: return
+                val playback = PlaybackFragment.newInstance(
+                    url = TEST_AUDIO_URL,
+                    title = "Alerta FC ${lectura.valorBpm} bpm"
+                )
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.main_browse_fragment, playback)
+                    .addToBackStack(null)
+                    .commit()
             }
 
             ACTION_BACK -> requireActivity().onBackPressedDispatcher.onBackPressed()
