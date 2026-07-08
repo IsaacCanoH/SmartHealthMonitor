@@ -12,7 +12,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "mx.utng.ich.smarthealth"
+        applicationId = "mx.utng.smarthealthmonitor.tv"
         minSdk = 23
         targetSdk = 36
         versionCode = 1

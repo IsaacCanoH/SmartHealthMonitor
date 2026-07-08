@@ -20,4 +20,7 @@ interface LecturaFCDao {
         """
     )
     fun obtenerUltimas(): Flow<List<LecturaFC>>
+
+    @Query("SELECT * FROM lecturas_fc WHERE id = :id LIMIT 1")
+    suspend fun obtenerPorId(id: Int): LecturaFC?
 }
