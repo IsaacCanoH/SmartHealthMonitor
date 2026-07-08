@@ -12,6 +12,7 @@ import androidx.leanback.widget.HeaderItem
 import androidx.leanback.widget.ListRow
 import androidx.leanback.widget.ListRowPresenter
 import kotlinx.coroutines.launch
+import mx.utng.smarthealthmonitor.data.db.LecturaFC
 
 class MainFragment : BrowseSupportFragment() {
 
@@ -27,7 +28,20 @@ class MainFragment : BrowseSupportFragment() {
         brandColor = resources.getColor(R.color.sh_primary, null)
 
         cargarFilas()
+        configurarClickLectura()
         observarDatos()
+    }
+
+    private fun configurarClickLectura() {
+        setOnItemViewClickedListener { _, item, _, _ ->
+            if (item is LecturaFC) {
+                val detail = DetailFragment.newInstance(item.id)
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.main_browse_fragment, detail)
+                    .addToBackStack(null)
+                    .commit()
+            }
+        }
     }
 
     private fun observarDatos() {
