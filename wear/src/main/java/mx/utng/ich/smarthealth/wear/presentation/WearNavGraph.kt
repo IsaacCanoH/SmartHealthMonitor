@@ -17,6 +17,7 @@ object WearScreens {
 @Composable
 fun SmartHealthWearNavGraph() {
     val navController = rememberSwipeDismissableNavController()
+    val viewModel: WearDashboardViewModel = viewModel()
 
     SwipeDismissableNavHost(
         navController = navController,
@@ -29,12 +30,12 @@ fun SmartHealthWearNavGraph() {
                 },
                 onHistorialClick = {
                     navController.navigate(WearScreens.HISTORIAL)
-                }
+                },
+                viewModel = viewModel
             )
         }
 
         composable(WearScreens.ALERTA) {
-            val viewModel: WearDashboardViewModel = viewModel()
             val fc by viewModel.fc.collectAsState()
 
             WearAlertaScreen(
@@ -52,7 +53,8 @@ fun SmartHealthWearNavGraph() {
             WearHistorialScreen(
                 onBack = {
                     navController.popBackStack()
-                }
+                },
+                viewModel = viewModel
             )
         }
     }
