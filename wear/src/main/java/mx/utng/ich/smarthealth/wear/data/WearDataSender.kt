@@ -8,9 +8,9 @@ import kotlinx.coroutines.tasks.await
 
 class WearDataSender(private val context: Context) {
 
-    suspend fun enviarFC(bpm: Int) {
+    suspend fun enviarFC(bpm: Int): Boolean {
         Log.d("WearDataSender", "Intentando enviar FC: $bpm")
-        enviarMensaje("/smarthealthmonitor/fc", bpm.toString())
+        return enviarMensaje("/smarthealthmonitor/fc", bpm.toString())
     }
 
     suspend fun enviarPasos(pasos: Int) {
@@ -18,7 +18,7 @@ class WearDataSender(private val context: Context) {
         enviarMensaje("/smarthealthmonitor/pasos", pasos.toString())
     }
 
-    private suspend fun enviarMensaje(path: String, data: String) {
+    private suspend fun enviarMensaje(path: String, data: String): Boolean {
         try {
             val capabilityInfo = Wearable.getCapabilityClient(context)
                 .getCapability("health_monitor_receiver", CapabilityClient.FILTER_ALL)
@@ -40,7 +40,7 @@ class WearDataSender(private val context: Context) {
 
             if (targetNodes.isEmpty()) {
                 Log.w("WearDataSender", "FALLO: No se detectaron dispositivos conectados.")
-                return
+                return false
             }
 
             targetNodes.forEach { node ->
@@ -56,8 +56,10 @@ class WearDataSender(private val context: Context) {
 
                 Log.d("WearDataSender", "Mensaje enviado correctamente: path=$path data=$data")
             }
+            return true
         } catch (e: Exception) {
             Log.e("WearDataSender", "Error al enviar mensaje", e)
+            return false
         }
     }
 }

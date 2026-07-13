@@ -31,6 +31,7 @@ class WearListenerService : WearableListenerService() {
 
                 scope.launch {
                     SmartHealthRepository.actualizarFC(bpm)
+                    MobileToTvSender.enviarFC(bpm)
                     Log.d(TAG, "FC guardada en Room: $bpm")
                 }
             }
