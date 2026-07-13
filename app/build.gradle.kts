@@ -40,6 +40,11 @@ android {
         buildConfigField("String", "NEON_API_KEY", "\"${localProperty("NEON_API_KEY")}\"")
         buildConfigField("String", "NEON_HOST", "\"${localProperty("NEON_HOST")}\"")
         buildConfigField("String", "NEON_DB", "\"${localProperty("NEON_DB")}\"")
+        buildConfigField(
+            "String",
+            "NEON_CONNECTION_STRING",
+            "\"${localProperty("NEON_CONNECTION_STRING")}\""
+        )
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
