@@ -58,8 +58,18 @@ class WearDashboardViewModel(application: Application) : AndroidViewModel(applic
     fun enviarFrecuenciaCardiaca() {
         viewModelScope.launch {
             _estadoEnvio.value = "Enviando..."
-            val enviado = dataSender.enviarFC(fc.value)
-            _estadoEnvio.value = if (enviado) "FC enviada: ${fc.value} bpm" else "Teléfono no conectado"
+            val bpm = fc.value
+            val estado = when {
+                bpm < 60 -> "FC Baja"
+                bpm > 100 -> "FC Alta"
+                else -> "Normal"
+            }
+
+            // Publicar directamente en el topic que escucha la TV. El Data
+            // Layer se conserva como respaldo para sincronizar el telefono.
+            mqttPublisher.publishFC(bpm, estado)
+            dataSender.enviarFC(bpm)
+            _estadoEnvio.value = "FC enviada por MQTT: $bpm bpm"
         }
     }
 

@@ -15,6 +15,8 @@ import javax.net.ssl.SSLSocketFactory
 class MqttWearPublisher {
 
     private var client: MqttAsyncClient? = null
+    @Volatile private var pendingReading: Pair<Int, String>? = null
+    @Volatile private var isConnecting = false
 
     fun connect() {
         if (!MqttConfig.isConfigured) {
@@ -22,6 +24,8 @@ class MqttWearPublisher {
             return
         }
         if (client?.isConnected == true) return
+        if (isConnecting) return
+        isConnecting = true
 
         val mqttClient = try {
             MqttAsyncClient(
@@ -30,6 +34,7 @@ class MqttWearPublisher {
                 MemoryPersistence()
             )
         } catch (exception: MqttException) {
+            isConnecting = false
             Log.e(TAG, "No se pudo crear el cliente MQTT", exception)
             return
         }
@@ -39,6 +44,7 @@ class MqttWearPublisher {
             userName = MqttConfig.username
             password = MqttConfig.password.toCharArray()
             isCleanSession = true
+            isAutomaticReconnect = true
             connectionTimeout = 30
             keepAliveInterval = 60
             socketFactory = SSLSocketFactory.getDefault()
@@ -47,14 +53,22 @@ class MqttWearPublisher {
         try {
             mqttClient.connect(options, null, object : IMqttActionListener {
                 override fun onSuccess(asyncActionToken: IMqttToken?) {
+                    isConnecting = false
                     Log.d(TAG, "Conectado a HiveMQ Cloud")
+                    pendingReading?.also { (bpm, estado) ->
+                        pendingReading = null
+                        publishConnected(mqttClient, bpm, estado)
+                    }
                 }
 
                 override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
+                    isConnecting = false
+                    client = null
                     Log.e(TAG, "Error al conectar con HiveMQ Cloud", exception)
                 }
             })
         } catch (exception: MqttException) {
+            isConnecting = false
             client = null
             Log.e(TAG, "No se pudo iniciar la conexión MQTT", exception)
         }
@@ -63,10 +77,16 @@ class MqttWearPublisher {
     fun publishFC(bpm: Int, estado: String) {
         val mqttClient = client
         if (mqttClient?.isConnected != true) {
-            Log.w(TAG, "Lectura no publicada: cliente MQTT desconectado")
+            pendingReading = bpm to estado
+            Log.w(TAG, "Cliente MQTT desconectado; lectura pendiente: $bpm bpm")
+            connect()
             return
         }
 
+        publishConnected(mqttClient, bpm, estado)
+    }
+
+    private fun publishConnected(mqttClient: MqttAsyncClient, bpm: Int, estado: String) {
         val payload = Json.encodeToString(FcMessage(bpm = bpm, estado = estado)).encodeToByteArray()
         val mqttMessage = MqttMessage(payload).apply {
             qos = MqttConfig.QOS
@@ -91,6 +111,7 @@ class MqttWearPublisher {
             Log.w(TAG, "No se pudo cerrar limpiamente la conexión MQTT", exception)
         }
         client = null
+        isConnecting = false
     }
 
     private companion object {

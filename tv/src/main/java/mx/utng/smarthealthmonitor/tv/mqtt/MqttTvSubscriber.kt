@@ -1,6 +1,9 @@
 package mx.utng.smarthealthmonitor.tv.mqtt
 
 import android.util.Log
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import javax.net.ssl.SSLSocketFactory
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.serialization.SerializationException
@@ -46,14 +49,21 @@ class MqttTvSubscriber(
             }
 
             override fun messageArrived(topic: String, message: MqttMessage) {
-                if (topic != MqttConfig.TOPIC_TV) return
+                if (topic != MqttConfig.TOPIC_FC) return
 
-                val tvMessage = try {
-                    json.decodeFromString<TvMessage>(message.payload.decodeToString())
+                val fcMessage = try {
+                    json.decodeFromString<FcMessage>(message.payload.decodeToString())
                 } catch (exception: SerializationException) {
                     Log.e(TAG, "Mensaje de TV inválido", exception)
                     return
                 }
+                if (fcMessage.bpm !in 20..250) return
+                val instante = fcMessage.timestamp.takeIf { it > 0L } ?: System.currentTimeMillis()
+                val tvMessage = TvMessage(
+                    bpm = fcMessage.bpm,
+                    estado = fcMessage.estado,
+                    hora = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date(instante))
+                )
                 tvFlow.value = tvMessage
                 Log.d(TAG, "Recibido: ${tvMessage.bpm} bpm")
             }
@@ -93,8 +103,8 @@ class MqttTvSubscriber(
 
     private fun subscribeToTv(mqttClient: MqttAsyncClient) {
         try {
-            mqttClient.subscribe(MqttConfig.TOPIC_TV, MqttConfig.QOS)
-            Log.d(TAG, "TV suscrita a ${MqttConfig.TOPIC_TV}")
+            mqttClient.subscribe(MqttConfig.TOPIC_FC, MqttConfig.QOS)
+            Log.d(TAG, "TV suscrita a ${MqttConfig.TOPIC_FC}")
         } catch (exception: MqttException) {
             Log.e(TAG, "No se pudo suscribir al topic de TV", exception)
         }

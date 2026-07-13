@@ -7,7 +7,9 @@ internal object MqttConfig {
     val username: String = BuildConfig.MQTT_USERNAME
     val password: String = BuildConfig.MQTT_PASSWORD
 
-    const val TOPIC_TV = "utng/smarthealthmonitor/tv"
+    // Consumir la fuente original evita depender de que el telefono este
+    // abierto para reenviar las lecturas.
+    const val TOPIC_FC = "utng/smarthealthmonitor/fc"
     const val QOS = 1
     const val CLIENT_TV = "smarthealthmonitor-tv"
 
