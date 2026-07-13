@@ -5,7 +5,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.emptyFlow
 import mx.utng.smarthealthmonitor.data.db.LecturaFC
 import mx.utng.smarthealthmonitor.data.db.LecturaFCDao
 import mx.utng.smarthealthmonitor.data.db.SmartHealthDB
@@ -25,10 +24,12 @@ object SmartHealthRepository {
 
     suspend fun actualizarFC(bpm: Int) {
         _fcFlow.value = bpm
-        dao?.insertar(LecturaFC.crear(bpm))
+        checkNotNull(dao) { "SmartHealthRepository no fue inicializado" }
+            .insertar(LecturaFC.crear(bpm))
     }
 
     fun obtenerHistorial(): Flow<List<LecturaFC>> {
-        return dao?.obtenerUltimas() ?: emptyFlow()
+        return checkNotNull(dao) { "SmartHealthRepository no fue inicializado" }
+            .obtenerUltimas()
     }
 }

@@ -54,5 +54,35 @@ Desarrollada como proyecto integrador — UTNG 9° Cuatrimestre 2025.
 
 ---
 
+## Arquitectura — SmartHealth Monitor
+
+```text
+Sensor PPG (Wear OS)
+    │  Health Services API
+    ▼
+PassiveListenerService (wear)
+    │  MessageClient (BLE)
+    ▼
+WearListenerService (app)
+    │  SmartHealthRepository
+    ▼
+StateFlow<Int> (fcActual)  ──────────────────────────────────┐
+    │                                                        │
+    ▼                                                        ▼
+DashboardViewModel (app)              TvViewModel (tv)
+    │  collectAsState()                    │  collectAsState()
+    ▼                                      ▼
+DashboardScreen (Compose)          TvCatalogScreen (Compose TV)
+    └── CastButton ──► Chromecast (Remote Playback)
+
+Room DB (LecturaFC)  ◄──  Repository  ──►  Flow<List<LecturaFC>>
+                                                │
+                          ┌─────────────────────┴──────────┐
+                          ▼                                ▼
+               HistorialScreen (app)        TvCatalogScreen (tv)
+```
+
+---
+
 ## Autor
 Isaac Cano Hernandez — UTNG — Ing. en Desarrollo y Gestión de Software

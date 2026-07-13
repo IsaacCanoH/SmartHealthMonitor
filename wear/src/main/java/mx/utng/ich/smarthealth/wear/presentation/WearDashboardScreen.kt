@@ -28,6 +28,7 @@ fun WearDashboardScreen(
     viewModel: WearDashboardViewModel = viewModel()
 ) {
     val fc by viewModel.fc.collectAsState()
+    val estadoEnvio by viewModel.estadoEnvio.collectAsState()
     val listState = rememberScalingLazyListState()
 
     val mostrarHora by remember {
@@ -58,6 +59,16 @@ fun WearDashboardScreen(
             item {
                 WearFCCard(
                     fc = fc,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            item {
+                Chip(
+                    label = { Text("Enviar frecuencia") },
+                    secondaryLabel = { estadoEnvio?.let { Text(it) } },
+                    onClick = viewModel::enviarFrecuenciaCardiaca,
+                    colors = ChipDefaults.primaryChipColors(),
                     modifier = Modifier.fillMaxWidth()
                 )
             }

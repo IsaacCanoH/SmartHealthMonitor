@@ -1,6 +1,7 @@
 package mx.utng.smarthealthmonitor.tv
 
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.view.ViewGroup
 import androidx.leanback.widget.ImageCardView
 import androidx.leanback.widget.Presenter
@@ -12,6 +13,8 @@ class FCCardPresenter : Presenter() {
         val cardView = ImageCardView(parent.context).apply {
             isFocusable = true
             isFocusableInTouchMode = true
+            setCardType(ImageCardView.CARD_TYPE_INFO_UNDER_WITH_EXTRA)
+            setInfoVisibility(ImageCardView.CARD_REGION_VISIBLE_ALWAYS)
             setMainImageDimensions(240, 180)
         }
 
@@ -31,6 +34,7 @@ class FCCardPresenter : Presenter() {
             Color.parseColor("#B3261E")
         }
 
+        card.mainImage = ColorDrawable(bgColor)
         card.setBackgroundColor(bgColor)
     }
 
