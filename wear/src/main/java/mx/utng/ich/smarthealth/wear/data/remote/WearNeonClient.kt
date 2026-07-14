@@ -8,20 +8,15 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 internal object WearNeonClient {
 
-    val authHeader: String
-        get() = "Bearer ${BuildConfig.NEON_API_KEY}"
-
     val connectionString: String
         get() = BuildConfig.NEON_CONNECTION_STRING
 
     private val isConfigured: Boolean
         get() = BuildConfig.NEON_HOST.isNotBlank() &&
-            BuildConfig.NEON_API_KEY.isNotBlank() &&
             connectionString.startsWith("postgresql://")
 
     private val httpClient by lazy {
         val logging = HttpLoggingInterceptor().apply {
-            redactHeader("Authorization")
             redactHeader("Neon-Connection-String")
             level = if (BuildConfig.DEBUG) {
                 HttpLoggingInterceptor.Level.BASIC

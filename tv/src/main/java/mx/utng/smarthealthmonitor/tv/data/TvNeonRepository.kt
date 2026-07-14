@@ -21,7 +21,6 @@ class TvNeonRepository {
         withContext(Dispatchers.IO) {
             require(limite > 0) { "El límite debe ser mayor que cero" }
             TvNeonClient.api.executeQuery(
-                authorization = TvNeonClient.authHeader,
                 connectionString = TvNeonClient.connectionString,
                 request = TvNeonRequest(
                     query = """
@@ -38,7 +37,6 @@ class TvNeonRepository {
     suspend fun obtenerEstadisticas(): List<TvLecturaFcDto> =
         withContext(Dispatchers.IO) {
             TvNeonClient.api.executeQuery(
-                authorization = TvNeonClient.authHeader,
                 connectionString = TvNeonClient.connectionString,
                 request = TvNeonRequest(
                     query = """

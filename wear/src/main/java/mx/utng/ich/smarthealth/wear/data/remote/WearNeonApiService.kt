@@ -27,7 +27,6 @@ interface WearNeonApiService {
 
     @POST("sql")
     suspend fun executeQuery(
-        @Header("Authorization") authorization: String,
         @Header("Neon-Connection-String") connectionString: String,
         @Body request: WearNeonRequest
     ): WearNeonResponse<WearLecturaFcDto>

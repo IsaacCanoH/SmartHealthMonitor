@@ -34,7 +34,6 @@ interface NeonApiService {
 
     @POST("sql")
     suspend fun executeQuery(
-        @Header("Authorization") authorization: String,
         @Header("Neon-Connection-String") connectionString: String,
         @Body request: NeonRequest
     ): NeonResponse<LecturaFcDto>

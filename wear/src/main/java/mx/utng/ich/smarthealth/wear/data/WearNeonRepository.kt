@@ -15,7 +15,6 @@ class WearNeonRepository {
     suspend fun publicarLectura(bpm: Int, estado: String) = withContext(Dispatchers.IO) {
         val hora = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
         WearNeonClient.api.executeQuery(
-            authorization = WearNeonClient.authHeader,
             connectionString = WearNeonClient.connectionString,
             request = WearNeonRequest(
                 query = """
@@ -31,7 +30,6 @@ class WearNeonRepository {
     suspend fun obtenerUltimasLecturas(): List<WearLecturaFcDto> =
         withContext(Dispatchers.IO) {
             WearNeonClient.api.executeQuery(
-                authorization = WearNeonClient.authHeader,
                 connectionString = WearNeonClient.connectionString,
                 request = WearNeonRequest(
                     query = """

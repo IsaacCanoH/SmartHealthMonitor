@@ -44,7 +44,6 @@ class SyncRepository(
     private suspend fun sincronizarHaciaNeon(lectura: LecturaFC): Int =
         withContext(Dispatchers.IO) {
             val response = NeonClient.api.executeQuery(
-                authorization = NeonClient.authHeader,
                 connectionString = NeonClient.connectionString,
                 request = NeonRequest(
                     query = """
@@ -70,7 +69,6 @@ class SyncRepository(
         require(limite > 0) { "El límite debe ser mayor que cero" }
 
         val response = NeonClient.api.executeQuery(
-            authorization = NeonClient.authHeader,
             connectionString = NeonClient.connectionString,
             request = NeonRequest(
                 query = """
