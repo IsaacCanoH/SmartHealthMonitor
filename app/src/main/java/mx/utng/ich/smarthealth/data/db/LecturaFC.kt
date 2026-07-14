@@ -1,8 +1,8 @@
 package mx.utng.ich.smarthealth.data.db
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
-import androidx.room.ColumnInfo
 import androidx.room.PrimaryKey
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -27,7 +27,7 @@ data class LecturaFC(
     },
     @ColumnInfo(defaultValue = "'app'")
     val dispositivo: String = "app",
-    @ColumnInfo(defaultValue = "0")
+    @ColumnInfo(name = "sincronizado", defaultValue = "0")
     val sincronizado: Boolean = false,
     val neonId: Int? = null
 ) {

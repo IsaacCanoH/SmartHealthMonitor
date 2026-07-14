@@ -12,6 +12,10 @@ interface LecturaFCDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertar(lectura: LecturaFC): Long
 
+    /** Inserta una lectura o reemplaza la fila local con el mismo id. */
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(lectura: LecturaFC)
+
     // Flow: actualización reactiva cuando hay nuevos datos
     @Query(
         """
@@ -24,6 +28,10 @@ interface LecturaFCDao {
 
     @Query("SELECT * FROM lecturas_fc WHERE sincronizado = 0 ORDER BY timestamp ASC")
     suspend fun obtenerNoSincronizados(): List<LecturaFC>
+
+    /** Cantidad reactiva de lecturas que aún no se han enviado a Neon. */
+    @Query("SELECT COUNT(*) FROM lecturas_fc WHERE sincronizado = 0")
+    fun contarPendientes(): Flow<Int>
 
     @Query(
         """
