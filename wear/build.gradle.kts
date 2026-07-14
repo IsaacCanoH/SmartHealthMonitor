@@ -13,7 +13,7 @@ val localProperties = Properties().apply {
     }
 }
 
-fun mqttProperty(name: String): String =
+fun localProperty(name: String): String =
     localProperties.getProperty(name, "")
         .replace("\\", "\\\\")
         .replace("\"", "\\\"")
@@ -56,9 +56,16 @@ android {
     }
 
     defaultConfig {
-        buildConfigField("String", "MQTT_BROKER_URL", "\"${mqttProperty("MQTT_BROKER_URL")}\"")
-        buildConfigField("String", "MQTT_USERNAME", "\"${mqttProperty("MQTT_USERNAME")}\"")
-        buildConfigField("String", "MQTT_PASSWORD", "\"${mqttProperty("MQTT_PASSWORD")}\"")
+        buildConfigField("String", "MQTT_BROKER_URL", "\"${localProperty("MQTT_BROKER_URL")}\"")
+        buildConfigField("String", "MQTT_USERNAME", "\"${localProperty("MQTT_USERNAME")}\"")
+        buildConfigField("String", "MQTT_PASSWORD", "\"${localProperty("MQTT_PASSWORD")}\"")
+        buildConfigField("String", "NEON_API_KEY", "\"${localProperty("NEON_API_KEY")}\"")
+        buildConfigField("String", "NEON_HOST", "\"${localProperty("NEON_HOST")}\"")
+        buildConfigField(
+            "String",
+            "NEON_CONNECTION_STRING",
+            "\"${localProperty("NEON_CONNECTION_STRING")}\""
+        )
     }
 }
 
@@ -103,6 +110,12 @@ dependencies {
 
     // Coroutines await() para Tasks de Google Play Services
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
+
+    // Retrofit + OkHttp para publicar directamente en Neon
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
     // Eclipse Paho MQTT para Android
     implementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5")

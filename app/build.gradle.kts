@@ -14,7 +14,7 @@ val localProperties = Properties().apply {
     }
 }
 
-fun mqttProperty(name: String): String =
+fun localProperty(name: String): String =
     localProperties.getProperty(name, "")
         .replace("\\", "\\\\")
         .replace("\"", "\\\"")
@@ -34,9 +34,17 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        buildConfigField("String", "MQTT_BROKER_URL", "\"${mqttProperty("MQTT_BROKER_URL")}\"")
-        buildConfigField("String", "MQTT_USERNAME", "\"${mqttProperty("MQTT_USERNAME")}\"")
-        buildConfigField("String", "MQTT_PASSWORD", "\"${mqttProperty("MQTT_PASSWORD")}\"")
+        buildConfigField("String", "MQTT_BROKER_URL", "\"${localProperty("MQTT_BROKER_URL")}\"")
+        buildConfigField("String", "MQTT_USERNAME", "\"${localProperty("MQTT_USERNAME")}\"")
+        buildConfigField("String", "MQTT_PASSWORD", "\"${localProperty("MQTT_PASSWORD")}\"")
+        buildConfigField("String", "NEON_API_KEY", "\"${localProperty("NEON_API_KEY")}\"")
+        buildConfigField("String", "NEON_HOST", "\"${localProperty("NEON_HOST")}\"")
+        buildConfigField("String", "NEON_DB", "\"${localProperty("NEON_DB")}\"")
+        buildConfigField(
+            "String",
+            "NEON_CONNECTION_STRING",
+            "\"${localProperty("NEON_CONNECTION_STRING")}\""
+        )
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -82,6 +90,15 @@ dependencies {
     implementation("com.google.android.gms:play-services-wearable:18.2.0")
     // Coroutines para await()
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
+
+    // Retrofit + OkHttp para llamadas a Neon HTTP API
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+
+    // WorkManager para sincronización periódica en segundo plano
+    implementation("androidx.work:work-runtime-ktx:2.9.1")
 
     // Eclipse Paho MQTT para Android
     implementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5")

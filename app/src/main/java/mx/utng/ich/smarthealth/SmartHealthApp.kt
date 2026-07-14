@@ -2,6 +2,7 @@ package mx.utng.ich.smarthealth
 
 import android.app.Application
 import mx.utng.ich.smarthealth.data.SmartHealthRepository
+import mx.utng.ich.smarthealth.data.sync.NeonSyncWorker
 import mx.utng.ich.smarthealth.mqtt.MqttAppService
 
 class SmartHealthApp : Application() {
@@ -12,6 +13,7 @@ class SmartHealthApp : Application() {
         super.onCreate()
 
         SmartHealthRepository.init(this)
+        NeonSyncWorker.schedule(this)
         mqttService = MqttAppService(SmartHealthRepository)
         mqttService.connect()
     }
