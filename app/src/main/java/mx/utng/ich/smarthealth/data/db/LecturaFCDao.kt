@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 interface LecturaFCDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertar(lectura: LecturaFC)
+    suspend fun insertar(lectura: LecturaFC): Long
 
     // Flow: actualización reactiva cuando hay nuevos datos
     @Query(
@@ -21,6 +21,41 @@ interface LecturaFCDao {
         """
     )
     fun obtenerUltimas(): Flow<List<LecturaFC>>
+
+    @Query("SELECT * FROM lecturas_fc WHERE sincronizado = 0 ORDER BY timestamp ASC")
+    suspend fun obtenerNoSincronizados(): List<LecturaFC>
+
+    @Query(
+        """
+        UPDATE lecturas_fc
+        SET sincronizado = 1, neonId = :neonId
+        WHERE id = :id
+        """
+    )
+    suspend fun marcarSincronizado(id: Int, neonId: Int)
+
+    @Query(
+        """
+        UPDATE lecturas_fc
+        SET valorBpm = :bpm,
+            timestamp = :timestamp,
+            hora = :hora,
+            esNormal = :esNormal,
+            estado = :estado,
+            dispositivo = :dispositivo,
+            sincronizado = 1
+        WHERE neonId = :neonId
+        """
+    )
+    suspend fun actualizarDesdeNeon(
+        neonId: Int,
+        bpm: Int,
+        timestamp: Long,
+        hora: String,
+        esNormal: Boolean,
+        estado: String,
+        dispositivo: String
+    ): Int
 
     @Query("SELECT COUNT(*) FROM lecturas_fc")
     suspend fun contarRegistros(): Int
