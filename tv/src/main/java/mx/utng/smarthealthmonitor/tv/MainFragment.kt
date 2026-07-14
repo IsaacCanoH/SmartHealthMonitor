@@ -18,6 +18,8 @@ class MainFragment : BrowseSupportFragment() {
 
     private val viewModel: TvViewModel by viewModels()
     private lateinit var histAdapter: ArrayObjectAdapter
+    private lateinit var neonAdapter: ArrayObjectAdapter
+    private lateinit var statsAdapter: ArrayObjectAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -47,9 +49,19 @@ class MainFragment : BrowseSupportFragment() {
     private fun observarDatos() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.historial.collect { lecturas ->
-                    histAdapter.clear()
-                    lecturas.forEach { histAdapter.add(it) }
+                launch {
+                    viewModel.historial.collect { lecturas ->
+                        histAdapter.clear()
+                        lecturas.forEach { histAdapter.add(it) }
+                    }
+                }
+                launch {
+                    viewModel.state.collect { state ->
+                        neonAdapter.clear()
+                        state.lecturasNeon.forEach { neonAdapter.add(it) }
+                        statsAdapter.clear()
+                        state.estadisticas.forEach { statsAdapter.add(it) }
+                    }
                 }
             }
         }
@@ -59,7 +71,11 @@ class MainFragment : BrowseSupportFragment() {
         val rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
 
         histAdapter = ArrayObjectAdapter(FCCardPresenter())
-        rowsAdapter.add(ListRow(HeaderItem("Historial FC"), histAdapter))
+        neonAdapter = ArrayObjectAdapter(NeonFcCardPresenter())
+        statsAdapter = ArrayObjectAdapter(NeonFcCardPresenter())
+        rowsAdapter.add(ListRow(HeaderItem("Historial local"), histAdapter))
+        rowsAdapter.add(ListRow(HeaderItem("Historial Neon"), neonAdapter))
+        rowsAdapter.add(ListRow(HeaderItem("Promedios por dispositivo"), statsAdapter))
 
         adapter = rowsAdapter
     }
